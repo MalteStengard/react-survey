@@ -129,6 +129,7 @@ h2 {
 }
 
 .form input[type="email"],
+.form input[type="name"],
 .form input[type="text"] {
   margin-top: 0.5rem;
   padding: 0.25rem;
@@ -150,7 +151,7 @@ h2 {
 }
 
 .form__group.radio label:hover {
-  background-color: white;
+  background-color: rgb(255, 255, 255);
 }
 
 .form__group input {
