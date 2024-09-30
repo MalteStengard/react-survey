@@ -1,23 +1,35 @@
 import { useState } from "react";
+import AnswersList from "./AnswersList";
 
 function Survey() {
   const [open, setOpen] = useState(false); //Ignore this state
-
-  const [form, setForm] = useState({
+  const initialFormState = {
     colour: "",
     activity: [],
     text: "",
     name: "",
     email: "",
-  });
+  };
+  const [form, setForm] = useState(initialFormState);
+
+  // const [form, setForm] = useState({
+  //   colour: "",
+  //   activity: [],
+  //   text: "",
+  //   name: "",
+  //   email: "",
+  // });
+
+  const [answerList, setAnswerList] = useState([]);
 
   const resetForm = () => {
-    setForm(form);
+    setForm(initialFormState);
   };
 
-  const handleSubmit = (submittedForm) => {
-    submittedForm.preventDefault();
-    console.log(submittedForm);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(event);
+    setAnswerList([...answerList, form]);
     resetForm();
   };
 
@@ -25,30 +37,44 @@ function Survey() {
       console.log(event.target);
       const {name, value, type} = event.target;
 
-       switch({name, value, type}) {
-        case type === 'name':
-          setForm({...form, [name] : value});
-          break;
-        case type === 'email':
-          setForm({...form, [name] : value});
-          break;
-        case name === 'text':
-          setForm({...form, [name] : value});
-          break;
-        case type === 'checkbox':
-          setForm({...form, [name] : value});
-          break;
-        case type === 'radio':
-          setForm({...form, [name] : value});
-          break;
-       }
+      if (type === "checkbox") {
+        setForm((prev) => {
+          const activity = prev.activity.includes(value) ? prev.activity.filter((item) => item !== value) : [...prev.activity, value];
+          return { ...prev, [name] : activity}
+        })
+      } else {
+        setForm({...form, [name] : value});
+      }
+
+      //  switch(type) {
+        
+      //   case 'text':
+      //     setForm({...form, [name] : value});
+      //     break;
+      //   case 'email':
+      //     setForm({...form, [name] : value});
+      //     break;
+      //   case 'textarea':
+      //     setForm({...form, [name] : value});
+      //     break;
+      //   case 'checkbox':
+      //     setForm({...form, [name] : value});
+      //     break;
+      //   case 'radio':
+      //     setForm({...form, [name] : value});
+      //     break;
+      //   case 1:
+      //     default:
+      //     console.log('Hit Nothing :(')
+      //     console.log(type)
+      //  }
   };
 
   return (
     <main className="survey">
       <section className={`survey__list ${open ? "open" : ""}`}>
         <h2>Answers list</h2>
-        {/* answers should go here */}
+        <AnswersList answersList={answerList} />
       </section>
       <section className="survey__form">
         <form className="form" onSubmit={handleSubmit}>
@@ -56,7 +82,7 @@ function Survey() {
           <div className="form__group radio">
             <h3>How do you rate your rubber duck colour?</h3>
             {[1, 2, 3, 4].map((index) => (
-              <label key={index}>
+              <label>
                 <input
                   key={index}
                   type="radio"
@@ -76,7 +102,7 @@ function Survey() {
               "Eat Cereal",
               "We can dance",
             ].map((activity) => (
-              <label key={activity}>
+              <label>
                 <input
                   type="checkbox"
                   name="activity"
@@ -101,7 +127,7 @@ function Survey() {
             Put your name here (if you feel like it):
             <input
               type="name"
-              name="username"
+              name="name"
               onChange={handleChange}
               value={form.name}
             />
